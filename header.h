@@ -3,8 +3,7 @@
 
 #include <stdbool.h>
 #include <stdio.h>
-
-extern unsigned int err_count;
+#include <stdlib.h>
 
 #define num_len_max 24
 #define exp_len_max 1024
@@ -15,13 +14,14 @@ extern unsigned int err_count;
 If you do, a critical error has occured. Please contact the app developer.\n"
 
 #define argv(x, y) argv[x][y]
-#define debug fprintf(stderr, "error@ %s, line %d\n", __FILE__, __LINE__)
-#define asrt(z)                     \
-	if (!z) {                       \
-		++err_count;				\
-		fprintf(stderr, error_msg); \
-		debug;                      \
-		return 0;                   \
+
+extern unsigned int asrt_count;
+#define asrt(z)                                                      \
+	if (!z) {                                                        \
+		++asrt_count;                                                 \
+		fprintf(stderr, error_msg);                                  \
+		fprintf(stderr, "error@ %s, line %d\n", __FILE__, __LINE__); \
+		return 0;                                                    \
 	}
 //
 
@@ -37,22 +37,23 @@ typedef struct handle {
 } handle;
 
 typedef struct args {
-	bool should_exit;
+	int should_exit;
 	char* infile;
 	char* outfile;
 	char* xmlfile;
 	char whitespace;
 	char comment;
-	char abandon;
+	char quit;
 	char precision;
 } args;
 
-typedef struct operation{
+typedef struct operation {
 	double (*fn_ptr)(const double operands[]);
 	const char* tag;
 	unsigned int num_of_operands;
 } operation;
 
+// operations
 #define op_function_declr(name, op) op_##name(const double operands[])
 
 double op_function_declr(add, +);
@@ -65,6 +66,11 @@ double op_function_declr(divide, /);
 
 double op_function_declr(pow, ^);
 
+const operation* get_operation(const char* str);
+
+double* get_operands(handle* const top, unsigned int num_of_operands);
+
+// stack
 bool push(handle* const top, const double d);
 
 bool pop(handle* const top, double* d);
@@ -73,28 +79,23 @@ double peek(handle* const top);
 
 void pulverize(handle* const top);
 
-void print_stack(handle* const top);
+void print_stack(handle* const top); // do piachu
 
-int solve(handle* const top, const char op);
+// misc
+void get_help();
 
-int is_op(const char c);		
+bool copy_string(char** destination, const char* source);
 
-int memory_operation(handle* const top, const char op);
+args parse_args(int argc, char** argv);
 
 handle* new_stack();
 
 bool is_number(const char* ptr, double* d);
 
-int parse_exp(char* exp, handle* const top, const args xd, FILE* f_out);
-//returny:
-//-1 komentarz
-//0 = error@stack
-//1 alles gut
+bool memory_operation(handle* const top, const char op);
 
-int copy_string(char** destination, const char* source);
+bool parse_exp(char* exp, handle* const top, const args config, FILE* f_out);
 
-args parse_args(int argc, char** argv);
-
-void get_help();
+bool read_text(const args config);
 
 #endif  // HEADERS_H_

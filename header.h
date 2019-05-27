@@ -4,6 +4,8 @@
 #include <stdbool.h>
 #include <stdio.h>
 
+extern unsigned int err_count;
+
 #define num_len_max 24
 #define exp_len_max 1024
 #define n_operations 5
@@ -16,6 +18,7 @@ If you do, a critical error has occured. Please contact the app developer.\n"
 #define debug fprintf(stderr, "error@ %s, line %d\n", __FILE__, __LINE__)
 #define asrt(z)                     \
 	if (!z) {                       \
+		++err_count;				\
 		fprintf(stderr, error_msg); \
 		debug;                      \
 		return 0;                   \
@@ -45,12 +48,12 @@ typedef struct args {
 } args;
 
 typedef struct operation{
-	double (*fn_ptr)(const double a, const double b);
+	double (*fn_ptr)(const double operands[]);
 	const char* tag;
 	unsigned int num_of_operands;
 } operation;
 
-#define op_function_declr(name, op) op_##name(const double a, const double b)
+#define op_function_declr(name, op) op_##name(const double operands[])
 
 double op_function_declr(add, +);
 

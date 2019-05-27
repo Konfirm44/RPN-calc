@@ -1,25 +1,8 @@
 #include <ctype.h>
-#include <math.h>
 #include <stdlib.h>
 #include <string.h>
 
 #include "header.h"
-
-#define op_function_def(name, op)                      \
-	double op_##name(const double a, const double b) { \
-		return a op b;                                 \
-	}
-//
-
-op_function_def(add, +)
-
-op_function_def(subtract, -)
-
-op_function_def(multiply, *)
-
-op_function_def(divide, /)
-
-double op_pow(const double a, const double b) { return pow(a, b); }
 
 bool push(handle* const top, const double d) {  //picuś glancuś
 	stack* p = malloc(sizeof(stack));
@@ -63,7 +46,7 @@ void print_stack(handle* const top) {  //do piachu
 	printf("END OF STACK\n");
 }
 
-int solve(handle* const top, const char op) {	//do zaorania też
+/* int solve(handle* const top, const char op) {	//do zaorania też
 	asrt(top->head);
 	double a, b;
 	asrt(pop(top, &b));
@@ -94,8 +77,8 @@ int solve(handle* const top, const char op) {	//do zaorania też
 	asrt(push(top, a));
 	return 1;
 }
-
-int is_op(const char c) {  //do zaorania
+ */
+/* int is_op(const char c) {  //do zaorania
 	switch (c) {
 	case '+':
 	case '-':
@@ -107,7 +90,7 @@ int is_op(const char c) {  //do zaorania
 		return 0;
 	}
 }
-
+ */
 int memory_operation(handle* const top, const char op) {
 	switch (op) {
 	case '+':
@@ -149,7 +132,7 @@ bool is_number(const char* ptr, double* d) {  //picuś glancuś
 	return 0;
 }
 
-int parse_exp(char* exp, handle* const top, const args xd, FILE* f_out) {
+/* int parse_exp(char* exp, handle* const top, const args xd, FILE* f_out) {
 	asrt(exp);
 	if (xd.infile)
 		fprintf(f_out, "exp= %s\n", exp);
@@ -185,7 +168,7 @@ int parse_exp(char* exp, handle* const top, const args xd, FILE* f_out) {
 	}
 	return 1;
 }
-
+ */
 int copy_string(char** destination, const char* source) {  //picuś glancuś
 	(*destination) = malloc(strlen(source) + 1);
 	asrt(*destination);

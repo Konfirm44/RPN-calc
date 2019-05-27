@@ -5,13 +5,15 @@
 
 //to do: function pointers, xml, help()
 
+unsigned int err_count = 0;
+
 const operation* get_operation(const char* str) {
 	static const operation ops[n_operations] = {
-		{&op_add, "+", 2},
-		{&op_subtract, "-", 2},
-		{&op_multiply, "*", 2},
-		{&op_divide, "/", 2},
-		{&op_pow, "^", 2}
+		{op_add, "+", 2},
+		{op_subtract, "-", 2},
+		{op_multiply, "*", 2},
+		{op_divide, "/", 2},
+		{op_pow, "^", 2}
 	};
 	for (int i = 0; i < n_operations; ++i)
 		if (!strcmp(ops[i].tag, str))
@@ -19,15 +21,18 @@ const operation* get_operation(const char* str) {
 	return NULL;
 }
 
-int temp_subsolve(handle* const top, double* a, double* b) {
+double* temp_subsolve(handle* const top, unsigned int num_of_operands) {
 	asrt(top->head);
-	asrt(pop(top, b));
-	if (!(top->head)) {
-		push(top, *b);
-		return 1;
+	double* operands = malloc(num_of_operands * sizeof(double));
+	asrt(operands);
+	for (int i = 0; i < num_of_operands; ++i) {
+		asrt(pop(top, operands+i));
+		if (!(top->head) && (i != num_of_operands-1)) {
+			free(operands);
+			return NULL;
+		}
 	}
-	asrt(pop(top, a));
-	return 1;
+	return operands;
 }
 
 int parse_exp_fp(char* exp, handle* const top, const args xd, FILE* f_out) {
@@ -44,8 +49,7 @@ int parse_exp_fp(char* exp, handle* const top, const args xd, FILE* f_out) {
 			break;
 		} else if (is_number(ptr, &d)) {
 			asrt(push(top, d));
-
-		} else if (strlen(ptr) == 2 && (ptr[0] == 'm' || ptr[0] == 'M')) {  //może case na samo "m"
+		} else if (strlen(ptr) == 2 && (ptr[0] == 'm' || ptr[0] == 'M')) {  
 			asrt(memory_operation(top, ptr[1]));
 		} else if (strlen(ptr) == 1) {
 			if (ptr[0] == 'x' || ptr[0] == 'X') {
@@ -57,11 +61,9 @@ int parse_exp_fp(char* exp, handle* const top, const args xd, FILE* f_out) {
 				const operation* op = get_operation(ptr);
 				if (op) {
 					if (top->stacksize >= op->num_of_operands) {
-						//for(num_of_operands) pop
-						double a, b;
-						temp_subsolve(top, &a, &b);
-						d = op->fn_ptr(a, b);
-						asrt(push(top, d));
+						double* operands = temp_subsolve(top, op->num_of_operands);
+						asrt(operands);
+						asrt(push(top, op->fn_ptr(operands))); 
 					} else {
 						fprintf(f_out, "ERROR: too few operands\n");
 						return 0;
@@ -134,6 +136,7 @@ int read_text(const args xd) {
 		return 1;
 	} else
 		fprintf(stderr, "ERROR: could not open input file; program will now exit\n");
+
 	return 0;
 }
 
@@ -160,6 +163,8 @@ int main(int argc, char** argv) {
 	if (xd.xmlfile)
 		free(xd.xmlfile);
 
+	if (err_count)
+		fprintf(stderr, "err_count = %u\n", err_count);
 	return 0;
 }
 

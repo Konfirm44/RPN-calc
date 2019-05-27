@@ -4,7 +4,7 @@
 	if (debug_mode) \
 		fprintf(stderr, z);
 
-//to do: xml, help()
+//to do: xml
 
 unsigned int asrt_count = 0, debug_mode = 0;
 

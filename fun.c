@@ -17,6 +17,8 @@ void get_help() {
 	puts("-p		set output float precision - default: 2");
 	puts("-h OR -?	displays help");
 	puts("");
+	puts("example: onp.exe -i input.txt -o output.txt -w _ -c @ -q & -p 3");
+	puts("");
 	puts("The program will now exit.");
 
 	/* 
@@ -32,6 +34,8 @@ void get_help() {
 }
 
 bool copy_string(char** destination, const char* source) {
+	if (strcspn(source, "<>:\"/\\|?*") != strlen(source))
+		return 0;
 	(*destination) = malloc(strlen(source) + 1);
 	asrt(*destination);
 	strcpy(*destination, source);

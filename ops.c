@@ -56,10 +56,10 @@ void pulverize(handle* const top) {
 
 void print_stack(handle* const top) {  //do piachu
 	stack* p = top->head;
-	printf("MEMORY = %0.2f\nSTACK:\t", top->memory);
+	fprintf(stderr, "MEMORY = %0.2f\nSTACK:\t", top->memory);
 	while (p) {
-		printf("%.2f\t", p->value);
+		fprintf(stderr, "%.2f\t", p->value);
 		p = p->next;
 	}
-	printf("END OF STACK\n");
+	fprintf(stderr, "END OF STACK\n");
 }

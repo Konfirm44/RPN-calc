@@ -1,5 +1,5 @@
-#ifndef HEADERS_H_
-#define HEADERS_H_
+#ifndef HEADER_H
+#define HEADER_H
 
 #include <stdbool.h>
 #include <stdio.h>
@@ -8,7 +8,7 @@
 #define num_len_max 24
 #define exp_len_max 1024
 #define n_operations 5
-#define restricted_characters "0123456789.+-*/^xXmMrRcC"
+#define restricted_characters "0123456789.+-*/^rRcC"
 #define error_msg \
 	"You should not be seeing this message. \
 If you do, a critical error has occured. Please contact the app developer.\n"
@@ -45,6 +45,8 @@ typedef struct args {
 	char comment;
 	char quit;
 	char precision;
+	char deleter;
+	char memory;
 } args;
 
 typedef struct operation {
@@ -54,17 +56,17 @@ typedef struct operation {
 } operation;
 
 // operations
-#define op_function_declr(name, op) op_##name(const double operands[])
+#define op_function_declr(name) op_##name(const double operands[])
 
-double op_function_declr(add, +);
+double op_function_declr(add);
 
-double op_function_declr(subtract, -);
+double op_function_declr(subtract);
 
-double op_function_declr(multiply, *);
+double op_function_declr(multiply);
 
-double op_function_declr(divide, /);
+double op_function_declr(divide);
 
-double op_function_declr(pow, ^);
+double op_function_declr(pow);
 
 const operation* get_operation(const char* str);
 
@@ -92,10 +94,10 @@ handle* new_stack();
 
 bool is_number(const char* ptr, double* d);
 
-bool memory_operation(handle* const top, const char op);
+bool memory_operation(handle* const top, const char* op);
 
 bool parse_exp(char* exp, handle* const top, const args config, FILE* f_out);
 
 bool read_text(const args config);
 
-#endif  // HEADERS_H_
+#endif  // HEADER_H

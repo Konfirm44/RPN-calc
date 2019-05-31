@@ -3,6 +3,8 @@
 
 #include "header.h"
 
+#define eq(str1, str2) !strcmp(str1, str2)
+
 void get_help() {
 	puts("REVERSE POLISH NOTATION CALCULATOR");
 	puts("author: Tomasz Sitek");
@@ -29,12 +31,13 @@ void get_help() {
 	c	comment
 	q	quit
 	p	precision
+	d	delete stack
 	h	help 
 	*/
 }
 
 bool copy_string(char** destination, const char* source) {
-	if (strcspn(source, "<>:\"/\\|?*") != strlen(source))
+	if (strcspn(source, "<>|?*") != strlen(source))
 		return 0;
 	(*destination) = malloc(strlen(source) + 1);
 	asrt(*destination);
@@ -51,7 +54,9 @@ args parse_args(int argc, char** argv) {
 		.whitespace = ' ',
 		.comment = '#',
 		.quit = '$',
-		.precision = 2};
+		.precision = 2, 
+		.deleter = 'X',
+		.memory = 'm' };
 
 	int i;
 	for (i = 1; i < argc; ++i) {
@@ -89,6 +94,22 @@ args parse_args(int argc, char** argv) {
 					} else {
 						config.quit = argv(i, 0);
 						if (strchr(restricted_characters, config.quit))
+							config.should_exit = true;
+					}
+				} else if (c == 'd') {
+					if (i == argc - 1 || strlen(argv[++i]) != 1) {
+						config.should_exit = true;
+					} else {
+						config.deleter = argv(i, 0);
+						if (strchr(restricted_characters, config.deleter))
+							config.should_exit = true;
+					}
+				} else if (c == 'm') {
+					if (i == argc - 1 || strlen(argv[++i]) != 1) {
+						config.should_exit = true;
+					} else {
+						config.memory = argv(i, 0);
+						if (strchr(restricted_characters, config.memory))
 							config.should_exit = true;
 					}
 				} else if (c == 'p') {
@@ -142,25 +163,39 @@ bool is_number(const char* ptr, double* d) {
 	return 0;
 }
 
-bool memory_operation(handle* const top, const char op) {
-	switch (op) {
-	case '+':
+bool memory_operation(handle* const top, const char* op) {
+	if (eq(op, "m+")) {
 		top->memory += peek(top);
 		return 1;
-	case '-':
+	} else if (eq(op, "m-")) {
 		top->memory -= peek(top);
 		return 1;
-	case 'r':
-	case 'R':
+	} else if (eq(op, "mr")) {
 		push(top, top->memory);
 		return 1;
-	case 'c':
-	case 'C':
+	} else if (eq(op, "mc")) {
 		top->memory = 0;
 		return 1;
-	default:
-		return 0;
-	}
+	} 
+	return 0;
+	// switch (op[1]) {
+	// case '+':
+	// 	top->memory += peek(top);
+	// 	return 1;
+	// case '-':
+	// 	top->memory -= peek(top);
+	// 	return 1;
+	// case 'r':
+	// case 'R':
+	// 	push(top, top->memory);
+	// 	return 1;
+	// case 'c':
+	// case 'C':
+	// 	top->memory = 0;
+	// 	return 1;
+	// default:
+	// 	return 0;
+	// }
 }
 
 const operation* get_operation(const char* str) {
@@ -205,33 +240,28 @@ bool parse_exp(char* exp, handle* const top, const args config, FILE* f_out) {
 			break;
 		} else if (is_number(ptr, &d)) {
 			asrt(push(top, d));
-		} else if (ptr[0] == 'm' || ptr[0] == 'M') {  
-			if (!memory_operation(top, ptr[1])) {
+		} else if (ptr[0] == config.memory) {  
+			if (!memory_operation(top, ptr)) { //zmiana
 				fprintf(f_out, "ERROR: invalid memory operator\n");
 				return 0;
 			}
-		} else {
-			if (ptr[0] == 'x' || ptr[0] == 'X') {
+		} else if (ptr[0] == config.deleter) {
 				pulverize(top);
-			} else if (ptr[0] == 'm' || ptr[0] == 'M') {
-				fprintf(f_out, "ERROR: no memory operation specifier; did you mean 'M+'?\n");
-				return 0;
-			} else {
-				const operation* op = get_operation(ptr);
-				if (op) {
-					if (top->stacksize >= op->num_of_operands) {
-						double* operands = get_operands(top, op->num_of_operands);
-						asrt(operands);
-						asrt(push(top, op->fn_ptr(operands))); 
-						free(operands);
-					} else {
-						fprintf(f_out, "ERROR: too few operands\n");
-						return 0;
-					}
+		} else {
+			const operation* op = get_operation(ptr);
+			if (op) {
+				if (top->stacksize >= op->num_of_operands) {
+					double* operands = get_operands(top, op->num_of_operands);
+					asrt(operands);
+					asrt(push(top, op->fn_ptr(operands))); 
+					free(operands);
 				} else {
-					fprintf(f_out, "ERROR: invalid token '%s'\n", ptr);
+					fprintf(f_out, "ERROR: too few operands\n");
 					return 0;
 				}
+			} else {
+				fprintf(f_out, "ERROR: invalid token '%s'\n", ptr);
+				return 0;
 			}
 		}
 		ptr = strtok(NULL, delim);
@@ -268,9 +298,8 @@ bool read_text(const args config) {
 				break;
 			if (exp[0] == '\n' || exp[0] == config.comment)
 				continue;
-			for (int i = 0; i < strlen(exp); ++i)
-				if (exp[i] == '\n')
-					exp[i] = '\0';
+			if (exp[strlen(exp)-1] == '\n')
+				exp[strlen(exp)-1] = '\0';
 
 			if (!parse_exp(exp, top, config, f_out)) {
 				fprintf(f_out, "ERROR: expression invalid\n");

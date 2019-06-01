@@ -8,7 +8,7 @@
 #define num_len_max 24
 #define exp_len_max 1024
 #define n_operations 5
-#define restricted_characters "0123456789.+-*/^rRcC"
+#define restricted_characters "0123456789.+-*/^"
 #define error_msg \
 	"You should not be seeing this message. \
 If you do, a critical error has occured. Please contact the app developer.\n"
@@ -18,7 +18,7 @@ If you do, a critical error has occured. Please contact the app developer.\n"
 extern unsigned int asrt_count;
 #define asrt(z)                                                      \
 	if (!z) {                                                        \
-		++asrt_count;                                                 \
+		++asrt_count;                                                \
 		fprintf(stderr, error_msg);                                  \
 		fprintf(stderr, "error@ %s, line %d\n", __FILE__, __LINE__); \
 		return 0;                                                    \
@@ -81,7 +81,7 @@ double peek(handle* const top);
 
 void pulverize(handle* const top);
 
-void print_stack(handle* const top); // do piachu
+void print_stack(handle* const top);  // do piachu
 
 // misc
 void get_help();

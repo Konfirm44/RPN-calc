@@ -3,6 +3,24 @@
 
 #include "header.h"
 
+#define arg_char(struct_member)                                                        \
+	if (strlen(argv[++i]) != 1) {                                                      \
+		config.should_exit = true;                                                     \
+	} else {                                                                           \
+		if (strchr(restricted_characters, argv(i, 0)))                                 \
+			config.should_exit = true;                                                 \
+		else {                                                                         \
+			char* ptr = strchr(config_chars, config.struct_member);                    \
+			if (!ptr) {                                                                \
+				fprintf(stderr, "FATAL ERROR: arg_char _%c_\n", config.struct_member); \
+				config.should_exit = true;                                             \
+			} else {                                                                   \
+				*ptr = argv(i, 0);                                                     \
+				config.struct_member = argv(i, 0);                                     \
+			}                                                                          \
+		}                                                                              \
+	}
+//
 #define eq(str1, str2) !strcmp(str1, str2)
 
 void get_help() {
@@ -16,6 +34,8 @@ void get_help() {
 	puts("-w		set whitespace character - default: ' '");
 	puts("-c		set comment character - default: '#'");
 	puts("-q		set quit character - default: '$'");
+	puts("-d		set stack-delete character - default: 'x'");
+	puts("-m		set memory operation specifier character - default: 'm'");
 	puts("-p		set output float precision - default: 2");
 	puts("-h OR -?	displays help");
 	puts("");
@@ -32,6 +52,7 @@ void get_help() {
 	q	quit
 	p	precision
 	d	delete stack
+	m 	memory
 	h	help 
 	*/
 }
@@ -54,75 +75,45 @@ args parse_args(int argc, char** argv) {
 		.whitespace = ' ',
 		.comment = '#',
 		.quit = '$',
-		.precision = 2, 
-		.deleter = 'X',
-		.memory = 'm' };
+		.precision = 2,
+		.deleter = 'x',
+		.memory = 'm'};
 
+	char config_chars[8] = "#$ xm";
 	int i;
 	for (i = 1; i < argc; ++i) {
 		if (argv(i, 0) == '-') {
 			if (strlen(argv[i]) == 2) {
 				char c = argv(i, 1);
-				if (c == 'i') {
-					if (i == argc - 1 || !copy_string(&(config.infile), argv[++i]))
-						config.should_exit = true;
-				} else if (c == 'o') {
-					if (i == argc - 1 || !copy_string(&(config.outfile), argv[++i]))
-						config.should_exit = true;
-				} else if (c == 'x') {
-					if (i == argc - 1 || !copy_string(&(config.xmlfile), argv[++i]))
-						config.should_exit = true;
-				} else if (c == 'w') {
-					if (i == argc - 1 || strlen(argv[++i]) != 1) {
-						config.should_exit = true;
-					} else {
-						config.whitespace = argv(i, 0);
-						if (strchr(restricted_characters, config.whitespace))
+				if (i != argc - 1) {
+					if (c == 'i') {
+						if (!copy_string(&(config.infile), argv[++i]))
 							config.should_exit = true;
-					}
-				} else if (c == 'c') {
-					if (i == argc - 1 || strlen(argv[++i]) != 1) {
-						config.should_exit = true;
-					} else {
-						config.comment = argv(i, 0);
-						if (strchr(restricted_characters, config.comment))
+					} else if (c == 'o') {
+						if (!copy_string(&(config.outfile), argv[++i]))
 							config.should_exit = true;
-					}
-				} else if (c == 'q') {
-					if (i == argc - 1 || strlen(argv[++i]) != 1) {
-						config.should_exit = true;
-					} else {
-						config.quit = argv(i, 0);
-						if (strchr(restricted_characters, config.quit))
+					} else if (c == 'x') {
+						if (!copy_string(&(config.xmlfile), argv[++i]))
 							config.should_exit = true;
-					}
-				} else if (c == 'd') {
-					if (i == argc - 1 || strlen(argv[++i]) != 1) {
-						config.should_exit = true;
-					} else {
-						config.deleter = argv(i, 0);
-						if (strchr(restricted_characters, config.deleter))
-							config.should_exit = true;
-					}
-				} else if (c == 'm') {
-					if (i == argc - 1 || strlen(argv[++i]) != 1) {
-						config.should_exit = true;
-					} else {
-						config.memory = argv(i, 0);
-						if (strchr(restricted_characters, config.memory))
-							config.should_exit = true;
-					}
-				} else if (c == 'p') {
-					if (i == argc - 1 || strlen(argv[++i]) != 1) {
-						config.should_exit = true;
-					} else {
+					} else if (c == 'w') {
+						arg_char(whitespace);
+					} else if (c == 'c') {
+						arg_char(comment);
+					} else if (c == 'q') {
+						arg_char(quit);
+					} else if (c == 'd') {
+						arg_char(deleter);
+					} else if (c == 'm') {
+						arg_char(memory);
+					} else if (c == 'p') {
 						char* endptr;
 						size_t t = strtol(argv[i], &endptr, 10);
 						if ((*endptr) != '\0' || t < 0 || t > 15)
 							config.should_exit = true;
 						else
 							config.precision = t;
-					}
+					} else
+						config.should_exit = true;
 				} else if (c == 'h' || c == '?') {
 					get_help();
 					config.should_exit = -1;
@@ -136,12 +127,20 @@ args parse_args(int argc, char** argv) {
 			break;
 		}
 	}
-	
-	if (config.comment == config.whitespace || config.comment == config.quit || config.quit == config.whitespace) {
-		config.should_exit = true;
-		fprintf(stderr, "ERROR: comment/quit/whitespace characters must not be equal\n");
-	}
 
+	if (!config.should_exit) {
+		for (int i = 0; i < strlen(config_chars); ++i) {
+			for (int j = 0; j < strlen(config_chars); ++j) {
+				if (i != j && config_chars[i] == config_chars[j]) {
+					config.should_exit = true;
+					fprintf(stderr, "ERROR: configured characters must not be equal\n");
+					break;
+				}
+			}
+			if (config.should_exit == true)
+				break;
+		}
+	}
 	return config;
 }
 
@@ -176,7 +175,7 @@ bool memory_operation(handle* const top, const char* op) {
 	} else if (eq(op, "mc")) {
 		top->memory = 0;
 		return 1;
-	} 
+	}
 	return 0;
 	// switch (op[1]) {
 	// case '+':
@@ -204,8 +203,7 @@ const operation* get_operation(const char* str) {
 		{op_subtract, "-", 2},
 		{op_multiply, "*", 2},
 		{op_divide, "/", 2},
-		{op_pow, "^", 2}
-	};
+		{op_pow, "^", 2}};
 	for (int i = 0; i < n_operations; ++i)
 		if (!strcmp(ops[i].tag, str))
 			return &(ops[i]);
@@ -217,8 +215,8 @@ double* get_operands(handle* const top, unsigned int num_of_operands) {
 	double* operands = malloc(num_of_operands * sizeof(double));
 	asrt(operands);
 	for (int i = 0; i < num_of_operands; ++i) {
-		asrt(pop(top, operands+i));
-		if (!(top->head) && (i != num_of_operands-1)) {
+		asrt(pop(top, operands + i));
+		if (!(top->head) && (i != num_of_operands - 1)) {
 			free(operands);
 			return NULL;
 		}
@@ -240,20 +238,20 @@ bool parse_exp(char* exp, handle* const top, const args config, FILE* f_out) {
 			break;
 		} else if (is_number(ptr, &d)) {
 			asrt(push(top, d));
-		} else if (ptr[0] == config.memory) {  
-			if (!memory_operation(top, ptr)) { //zmiana
+		} else if (ptr[0] == config.memory) {
+			if (!memory_operation(top, ptr)) {  //zmiana
 				fprintf(f_out, "ERROR: invalid memory operator\n");
 				return 0;
 			}
 		} else if (ptr[0] == config.deleter) {
-				pulverize(top);
+			pulverize(top);
 		} else {
 			const operation* op = get_operation(ptr);
 			if (op) {
 				if (top->stacksize >= op->num_of_operands) {
 					double* operands = get_operands(top, op->num_of_operands);
 					asrt(operands);
-					asrt(push(top, op->fn_ptr(operands))); 
+					asrt(push(top, op->fn_ptr(operands)));
 					free(operands);
 				} else {
 					fprintf(f_out, "ERROR: too few operands\n");
@@ -272,7 +270,7 @@ bool parse_exp(char* exp, handle* const top, const args config, FILE* f_out) {
 		pulverize(top);
 		return 0;
 	}
-	
+
 	return 1;
 }
 
@@ -298,20 +296,20 @@ bool read_text(const args config) {
 				break;
 			if (exp[0] == '\n' || exp[0] == config.comment)
 				continue;
-			if (exp[strlen(exp)-1] == '\n')
-				exp[strlen(exp)-1] = '\0';
+			if (exp[strlen(exp) - 1] == '\n')
+				exp[strlen(exp) - 1] = '\0';
 
 			if (!parse_exp(exp, top, config, f_out)) {
 				fprintf(f_out, "ERROR: expression invalid\n");
 			} else {
-				if (top->head){
+				if (top->head) {
 					double d;
 					if (!pop(top, &d))
 						fprintf(f_out, "FATAL ERROR: could not pop\n");  //trza inny komunikat
 					else
 						fprintf(f_out, "\n\t= %.*f\n", config.precision, d);
 				} else {
-					fprintf(f_out, "\n\t= ___\nCalculator memory appears to be empty. Perhaps you used the 'X' operator at the end of your expression?\n");
+					fprintf(f_out, "\n\t= ___\nCalculator memory appears to be empty. Perhaps you used the '%c' operator at the end of your expression?\n", config.deleter);
 				}
 			}
 		}

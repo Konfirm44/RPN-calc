@@ -1,5 +1,5 @@
 @ECHO OFF
-konp.exe -i pliki\data.txt && GOTO :SUC
+konp.exe -i memtest.txt -d c && GOTO :SUC
 echo.
 echo ERROR OCCURED.
 GOTO :END

@@ -1,3 +1,4 @@
+/** @file */
 #ifndef HEADER_H
 #define HEADER_H
 
@@ -25,17 +26,20 @@ extern unsigned int asrt_count;
 	}
 //
 
+/** element stosu */
 typedef struct stack {
 	double value;
 	struct stack* next;
 } stack;
 
+/** uchwyt stosu */
 typedef struct handle {
 	stack* head;
 	double memory;
 	unsigned int stacksize;
 } handle;
 
+/** argumenty wiersza poleceń */
 typedef struct args {
 	int should_exit;
 	char* infile;
@@ -49,6 +53,7 @@ typedef struct args {
 	char memory;
 } args;
 
+/** element tablicy wskaźników na funkcje */
 typedef struct operation {
 	double (*fn_ptr)(const double operands[]);
 	const char* tag;
@@ -84,8 +89,14 @@ void pulverize(handle* const top);
 void print_stack(handle* const top);  // do piachu
 
 // misc
+/** Funkcja wyświetla pomoc. */
 void get_help();
 
+/** Funkcja 
+@param 
+@param 
+@return 
+*/
 bool copy_string(char** destination, const char* source);
 
 args parse_args(int argc, char** argv);

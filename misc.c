@@ -91,7 +91,7 @@ args parse_args(int argc, char** argv) {
 					} else if (c == 'p') {
 						char* endptr;
 						size_t t = strtol(argv[i], &endptr, 10);
-						if ((*endptr) != '\0' || t < 0 || t > 15)
+						if ((*endptr) != '\0' || t > 15)
 							config.should_exit = true;
 						else
 							config.precision = t;
@@ -112,9 +112,9 @@ args parse_args(int argc, char** argv) {
 	}
 
 	if (!config.should_exit) {
-		for (int i = 0; i < strlen(config_chars); ++i) {
-			for (int j = 0; j < strlen(config_chars); ++j) {
-				if (i != j && config_chars[i] == config_chars[j]) {
+		for (size_t x = 0; x < strlen(config_chars); ++x) {
+			for (size_t j = 0; j < strlen(config_chars); ++j) {
+				if (x != j && config_chars[x] == config_chars[j]) {
 					config.should_exit = true;
 					fprintf(stderr, "ERROR: configured characters must not be equal\n");
 					break;

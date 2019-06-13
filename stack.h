@@ -33,7 +33,7 @@ bool pop(handle* const top, double* d);
 
 /** funkcja zwraca wartość liczby ze szczytu stosu bez zdejmowania jej
  * @param top uchwyt stosu
- * @return wartość liczby ze szczytu stosu
+ * @return wartość liczby ze szczytu stosu, jeżeli stos jest pusty, to funkcja zwróci 0
  * */
 double peek(handle* const top);
 

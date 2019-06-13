@@ -59,9 +59,10 @@ double* get_operands(handle* const top, unsigned int num_of_operands) {
 	double* operands = malloc(num_of_operands * sizeof(double));
 	asrt(operands);
 	for (size_t i = 0; i < num_of_operands; ++i) {
-		asrt(pop(top, operands + i));
-		if (!(top->head) && (i != num_of_operands - 1)) {
+		bool b = (pop(top, operands + i));
+		if ((!(top->head) && (i != num_of_operands - 1)) || !b ) {
 			free(operands);
+			asrt(b);
 			return NULL;
 		}
 	}

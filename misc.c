@@ -9,7 +9,7 @@
 		config.should_exit = true;                                                     \
 	} else {                                                                           \
 		if (strchr(restricted_characters, argv(i, 0)))                                 \
-			config.should_exit = true;                                                 \
+			config.should_exit = -2;												   \
 		else {                                                                         \
 			char* ptr = strchr(config_chars, config.struct_member);                    \
 			if (!ptr) {                                                                \
@@ -123,6 +123,8 @@ args parse_args(int argc, char** argv) {
 			if (config.should_exit == true)
 				break;
 		}
+	} else if (config.should_exit == -2) {
+		fprintf(stderr, "ERROR: configured characters must not belong to this set '%s'\n", restricted_characters);
 	}
 	return config;
 }

@@ -17,7 +17,7 @@ int main(int argc, char** argv) {
 		free(config.outfile);
 
 	if (asrt_count) {
-		fprintf(stderr, "err_count = %u\n press any key to exit", asrt_count);
+		fprintf(stderr, "\nerr_count = %u\n\tpress any key to exit", asrt_count);
 		getchar();
 	}
 	

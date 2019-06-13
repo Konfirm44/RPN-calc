@@ -1,0 +1,20 @@
+exp= -7.26 -70.10 * -154.05 - # == 663.35
+ERROR: expression invalid
+exp= 4.28 -144.03 + # == -139.75
+ERROR: expression invalid
+exp= -5.97 156.48 / 75.12 * # == -2.87
+ERROR: expression invalid
+exp= -100.15 -143.29 - # == 43.14
+ERROR: expression invalid
+exp= -165.55 9.54 - 37.20 -56.15 * / # == 0.08
+ERROR: expression invalid
+exp= -251.48 56.64 - -68.39 198.06 * - # == 13236.99
+ERROR: expression invalid
+exp= -108.96 95.51 / # == -1.14
+ERROR: expression invalid
+exp= 43.67 0.54 / # == 81.00
+ERROR: expression invalid
+exp= 137.72 110.08 * 227.91 -208.01 * / # == -0.32
+ERROR: expression invalid
+exp= -30.59 -6.47 * 6.46 + # == 204.44
+ERROR: expression invalid

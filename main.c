@@ -4,7 +4,7 @@
 #include "operations.h"
 #include "stack.h"
 
-unsigned int asrt_count = 0; // liczba wystąpień błędów, nieistotne dla użytkownika
+unsigned int ASRT_COUNT = 0; // liczba wystąpień błędów, nieistotne dla użytkownika
 
 int main(int argc, char** argv) {
 	args config = parse_args(argc, argv);
@@ -16,8 +16,8 @@ int main(int argc, char** argv) {
 	if (config.outfile)
 		free(config.outfile);
 
-	if (asrt_count) {
-		fprintf(stderr, "\nerr_count = %u\n\tpress any key to exit", asrt_count);
+	if (ASRT_COUNT) {
+		fprintf(stderr, "\nerr_count = %u\n\tpress any key to exit", ASRT_COUNT);
 		getchar();
 	}
 	

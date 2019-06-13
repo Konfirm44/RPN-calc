@@ -25,16 +25,16 @@ double op_pow(const double operands[2]) {
 }
 
 bool memory_operation(handle* const top, const char* op) {
-	if (eq(op, "m+")) {
+	if (EQ(op, "m+")) {
 		top->memory += peek(top);
 		return 1;
-	} else if (eq(op, "m-")) {
+	} else if (EQ(op, "m-")) {
 		top->memory -= peek(top);
 		return 1;
-	} else if (eq(op, "mr")) {
+	} else if (EQ(op, "mr")) {
 		push(top, top->memory);
 		return 1;
-	} else if (eq(op, "mc")) {
+	} else if (EQ(op, "mc")) {
 		top->memory = 0;
 		return 1;
 	}
@@ -42,13 +42,13 @@ bool memory_operation(handle* const top, const char* op) {
 }
 
 const operation* get_operation(const char* str) {
-	static const operation ops[n_operations] = {
+	static const operation ops[N_OPERATIONS] = {
 		{op_add, "+", 2},
 		{op_subtract, "-", 2},
 		{op_multiply, "*", 2},
 		{op_divide, "/", 2},
 		{op_pow, "^", 2}};
-	for (int i = 0; i < n_operations; ++i)
+	for (int i = 0; i < N_OPERATIONS; ++i)
 		if (!strcmp(ops[i].tag, str))
 			return &(ops[i]);
 	return NULL;

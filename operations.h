@@ -4,7 +4,7 @@
 
 #include "stack.h"
 
-#define n_operations 5 /// rozmiar tablicy zawierającej wskaźniki na funkcje
+#define N_OPERATIONS 5 /// rozmiar tablicy zawierającej wskaźniki na funkcje
 
 /** element tablicy wskaźników na funkcje */
 typedef struct operation {

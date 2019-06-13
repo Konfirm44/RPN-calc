@@ -17,14 +17,14 @@
 If you do, a critical error has occured. Please contact the app developer.\n"
 
 #define argv(x, y) argv[x][y] /// wygodniejszy dostęp do tablicy dwuwymiarowej
-#define eq(str1, str2) !strcmp(str1, str2) /// wygodniejsze porównywanie stringów
+#define EQ(str1, str2) !strcmp(str1, str2) /// wygodniejsze porównywanie stringów
 
-extern unsigned int asrt_count; /// inicjalizacja w main.c
+extern unsigned int ASRT_COUNT; /// inicjalizacja w main.c
 
 /** makro wychwytujące błędy krytyczne */
 #define asrt(z)                                                      \
 	if (!z) {                                                        \
-		++asrt_count;                                                \
+		++ASRT_COUNT;                                                \
 		fprintf(stderr, error_msg);                                  \
 		fprintf(stderr, "error@ %s, line %d\n", __FILE__, __LINE__); \
 		return 0;                                                    \

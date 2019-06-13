@@ -1,1 +1,1 @@
-gcc -std=c17 -Wall -Werror -pedantic-errors main.c header.h fun.c ops.c -o konp.exe && cls
+gcc -std=c17 -Wall -Werror -pedantic-errors main.c misc.h misc.c operations.h operations.c stack.h stack.c -o konp.exe && cls

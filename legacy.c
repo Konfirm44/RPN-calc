@@ -124,3 +124,13 @@ int parse_exp(char* exp, handle* const top, const args xd, FILE* f_out) {
  
 
 handle *top = (handle) {.head = NULL, .memory = 0};
+
+void print_stack(handle* const top) {  //do piachu
+	stack* p = top->head;
+	fprintf(stderr, "MEMORY = %0.2f\nSTACK:\t", top->memory);
+	while (p) {
+		fprintf(stderr, "%.2f\t", p->value);
+		p = p->next;
+	}
+	fprintf(stderr, "END OF STACK\n");
+}

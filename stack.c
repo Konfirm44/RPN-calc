@@ -1,6 +1,6 @@
 /** @file */
-#include "misc.h"
 #include "stack.h"
+#include "misc.h"
 
 bool push(handle* const top, const double d) {
 	stack* p = malloc(sizeof(stack));

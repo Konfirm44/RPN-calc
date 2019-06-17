@@ -8,8 +8,8 @@
 	if (strlen(argv[++i]) != 1) {                                                      \
 		config.should_exit = true;                                                     \
 	} else {                                                                           \
-		if (strchr(RESTRICTED_CHARS, argv(i, 0)))                                 	   \
-			config.should_exit = -2;												   \
+		if (strchr(RESTRICTED_CHARS, argv(i, 0)))                                      \
+			config.should_exit = -2;                                                   \
 		else {                                                                         \
 			char* ptr = strchr(config_chars, config.struct_member);                    \
 			if (!ptr) {                                                                \
@@ -53,8 +53,7 @@ bool copy_path(char** destination, const char* source) {
 	return 1;
 }
 
-void verify_args (args* config, char* config_chars)
-{
+void verify_args(args* config, char* config_chars) {
 	if (!config->should_exit) {
 		for (size_t x = 0; x < strlen(config_chars); ++x) {
 			for (size_t j = 0; j < strlen(config_chars); ++j) {
@@ -70,7 +69,7 @@ void verify_args (args* config, char* config_chars)
 	} else if (config->should_exit == -2) {
 		fprintf(stderr, "ERROR: configured characters must not belong to this set '%s'\n", RESTRICTED_CHARS);
 	}
-	if (config->should_exit != false){
+	if (config->should_exit != false) {
 		if (config->infile)
 			free(config->infile);
 		if (config->outfile)
@@ -199,7 +198,7 @@ bool parse_exp(char* exp, handle* const top, const args config, FILE* f_out) {
 	return 1;
 }
 
-void set_files(const args config, FILE **f_in, FILE **f_out) {
+void set_files(const args config, FILE** f_in, FILE** f_out) {
 	if (config.infile)
 		f_in = fopen(config.infile, "r");
 	else
@@ -213,17 +212,15 @@ void set_files(const args config, FILE **f_in, FILE **f_out) {
 	}
 }
 
-void clear_files(const args *config, FILE **f_in, FILE **f_out) {
-	if (config->infile)
-		{
-			fclose(f_in);
-			free(config->infile);
-		}
-		if (config->outfile)
-		{
-			fclose(f_out);
-			free(config->outfile);
-		}
+void clear_files(const args* config, FILE** f_in, FILE** f_out) {
+	if (config->infile) {
+		fclose(f_in);
+		free(config->infile);
+	}
+	if (config->outfile) {
+		fclose(f_out);
+		free(config->outfile);
+	}
 }
 
 bool read_text(const args config) {

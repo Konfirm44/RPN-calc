@@ -42,4 +42,4 @@ double peek(handle* const top);
  * */
 void pulverize(handle* const top);
 
-#endif // STACK_H
+#endif  // STACK_H

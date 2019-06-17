@@ -4,7 +4,7 @@
 
 #include "stack.h"
 
-#define N_OPERATIONS 5 /// rozmiar tablicy zawierającej wskaźniki na funkcje
+#define N_OPERATIONS 5  /// rozmiar tablicy zawierającej wskaźniki na funkcje
 
 /** element tablicy wskaźników na funkcje */
 typedef struct operation {
@@ -12,7 +12,6 @@ typedef struct operation {
 	const char* tag;
 	unsigned int num_of_operands;
 } operation;
-
 
 /** makro deklarujące następujące funkcje 
  * @param name nazwa funkcji
@@ -54,5 +53,4 @@ const operation* get_operation(const char* str);
  * */
 double* get_operands(handle* const top, unsigned int num_of_operands);
 
-
-#endif // OPERATIONS_H
+#endif  // OPERATIONS_H

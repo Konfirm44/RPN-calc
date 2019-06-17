@@ -20,7 +20,7 @@ double op_divide(const double operands[2]) {
 	return (operands[0] == 0) ? 0 : operands[1] / operands[0];
 }
 
-double op_pow(const double operands[2]) { 
+double op_pow(const double operands[2]) {
 	return pow(operands[1], operands[0]);
 }
 
@@ -60,7 +60,7 @@ double* get_operands(handle* const top, unsigned int num_of_operands) {
 	asrt(operands);
 	for (size_t i = 0; i < num_of_operands; ++i) {
 		bool b = (pop(top, operands + i));
-		if ((!(top->head) && (i != num_of_operands - 1)) || !b ) {
+		if ((!(top->head) && (i != num_of_operands - 1)) || !b) {
 			free(operands);
 			asrt(b);
 			return NULL;

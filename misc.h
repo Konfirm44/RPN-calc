@@ -23,21 +23,20 @@
 		.memory = 'm'         \
 	}
 
-#define EXP_LEN_MAX 1024					/// najdłuższa możliwa liczba znaków w pojedynczym wyrażeniu
-#define RESTRICTED_CHARS "0123456789.+-*/^" /// znaki, których nie można używać jako inicjatorów komentarza itd.
+#define EXP_LEN_MAX 1024					 /// najdłuższa możliwa liczba znaków w pojedynczym wyrażeniu
+#define RESTRICTED_CHARS "0123456789.+-*/^"  /// znaki, których nie można używać jako inicjatorów komentarza itd.
 #define ERROR_MSG \
 	"You should not be seeing this message. \
 If you do, a critical error has occured. Please contact the app developer.\n"
 
-#define argv(x, y) argv[x][y]			   /// wygodniejszy dostęp do tablicy dwuwymiarowej
-#define EQ(str1, str2) !strcmp(str1, str2) /// wygodniejsze porównywanie stringów
+#define argv(x, y) argv[x][y]				/// wygodniejszy dostęp do tablicy dwuwymiarowej
+#define EQ(str1, str2) !strcmp(str1, str2)  /// wygodniejsze porównywanie stringów
 
-extern unsigned int ASRT_COUNT; /// inicjalizacja w main.c
+extern unsigned int ASRT_COUNT;  /// inicjalizacja w main.c
 
 /** makro wychwytujące błędy krytyczne */
 #define asrt(z)                                                      \
-	if (!z)                                                          \
-	{                                                                \
+	if (!z) {                                                        \
 		++ASRT_COUNT;                                                \
 		fprintf(stderr, ERROR_MSG);                                  \
 		fprintf(stderr, "error@ %s, line %d\n", __FILE__, __LINE__); \
@@ -46,17 +45,16 @@ extern unsigned int ASRT_COUNT; /// inicjalizacja w main.c
 //
 
 /** argumenty wiersza poleceń */
-typedef struct args
-{
-	int should_exit; ///< informacja o błędnych argumentach
-	char *infile;	///< ścieżka do pliku wejściowego
-	char *outfile;   ///< ścieżka do pliku wyjściowego
-	char whitespace; ///< znak odstępu między kolejnymi operatorami/operandami
-	char comment;	///< znak/operator rozpoczęcia komentarza
-	char quit;		 ///< znak/operator zamknięcia programu
-	char precision;  ///< długość rozwinięcia dziesiętnego dla wyjścia programu
-	char deleter;	///< znak/operator czyszczenia stosu
-	char memory;	 ///< znak/operator rozpoczynający operatory pamięciowe
+typedef struct args {
+	int should_exit;  ///< informacja o błędnych argumentach
+	char *infile;	 ///< ścieżka do pliku wejściowego
+	char *outfile;	///< ścieżka do pliku wyjściowego
+	char whitespace;  ///< znak odstępu między kolejnymi operatorami/operandami
+	char comment;	 ///< znak/operator rozpoczęcia komentarza
+	char quit;		  ///< znak/operator zamknięcia programu
+	char precision;   ///< długość rozwinięcia dziesiętnego dla wyjścia programu
+	char deleter;	 ///< znak/operator czyszczenia stosu
+	char memory;	  ///< znak/operator rozpoczynający operatory pamięciowe
 } args;
 
 /** funkcja wyświetla pomoc */
@@ -101,4 +99,4 @@ bool parse_exp(char *exp, handle *const top, const args config, FILE *f_out);
  * */
 bool read_text(const args config);
 
-#endif // MISC_H
+#endif  // MISC_H

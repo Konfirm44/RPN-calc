@@ -200,25 +200,25 @@ bool parse_exp(char* exp, handle* const top, const args config, FILE* f_out) {
 
 void set_files(const args config, FILE** f_in, FILE** f_out) {
 	if (config.infile)
-		f_in = fopen(config.infile, "r");
+		*f_in = fopen(config.infile, "r");
 	else
 		fprintf(stderr, "WAITING FOR INPUT, '%c' to exit:\n", config.quit);
 	//
 	if (config.outfile)
-		f_out = fopen(config.outfile, "w");
-	if (!f_out) {
-		f_out = stdout;
+		*f_out = fopen(config.outfile, "w");
+	if (!(*f_out)) {
+		*f_out = stdout;
 		fprintf(stderr, "ERROR: could not open output file; all output will be directed to console\n");
 	}
 }
 
 void clear_files(const args* config, FILE** f_in, FILE** f_out) {
 	if (config->infile) {
-		fclose(f_in);
+		fclose(*f_in);
 		free(config->infile);
 	}
 	if (config->outfile) {
-		fclose(f_out);
+		fclose(*f_out);
 		free(config->outfile);
 	}
 }

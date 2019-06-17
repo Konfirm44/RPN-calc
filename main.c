@@ -11,11 +11,6 @@ int main(int argc, char** argv) {
 	if (!(config.should_exit)) 
 		read_text(config);
 
-	if (config.infile)
-		free(config.infile);
-	if (config.outfile)
-		free(config.outfile);
-
 	if (ASRT_COUNT) {
 		fprintf(stderr, "\nerr_count = %u\n\tpress any key to exit", ASRT_COUNT);
 		getchar();

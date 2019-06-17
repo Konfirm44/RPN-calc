@@ -8,7 +8,7 @@
 	if (strlen(argv[++i]) != 1) {                                                      \
 		config.should_exit = true;                                                     \
 	} else {                                                                           \
-		if (strchr(restricted_characters, argv(i, 0)))                                 \
+		if (strchr(RESTRICTED_CHARS, argv(i, 0)))                                 	   \
 			config.should_exit = -2;												   \
 		else {                                                                         \
 			char* ptr = strchr(config_chars, config.struct_member);                    \
@@ -53,17 +53,33 @@ bool copy_path(char** destination, const char* source) {
 	return 1;
 }
 
+void verify_args (args* config, char* config_chars)
+{
+	if (!config->should_exit) {
+		for (size_t x = 0; x < strlen(config_chars); ++x) {
+			for (size_t j = 0; j < strlen(config_chars); ++j) {
+				if (x != j && config_chars[x] == config_chars[j]) {
+					config->should_exit = true;
+					fprintf(stderr, "ERROR: configured characters must not be equal\n");
+					break;
+				}
+			}
+			if (config->should_exit == true)
+				break;
+		}
+	} else if (config->should_exit == -2) {
+		fprintf(stderr, "ERROR: configured characters must not belong to this set '%s'\n", RESTRICTED_CHARS);
+	}
+	if (config->should_exit != false){
+		if (config->infile)
+			free(config->infile);
+		if (config->outfile)
+			free(config->outfile);
+	}
+}
+
 args parse_args(int argc, char** argv) {
-	args config = {
-		.should_exit = false,
-		.infile = NULL,
-		.outfile = NULL,
-		.whitespace = ' ',
-		.comment = '#',
-		.quit = '$',
-		.precision = 2,
-		.deleter = 'x',
-		.memory = 'm'};
+	args config = DEFAULT_ARGS;
 
 	char config_chars[8] = "#$ xm";
 	int i;
@@ -110,22 +126,7 @@ args parse_args(int argc, char** argv) {
 			break;
 		}
 	}
-
-	if (!config.should_exit) {
-		for (size_t x = 0; x < strlen(config_chars); ++x) {
-			for (size_t j = 0; j < strlen(config_chars); ++j) {
-				if (x != j && config_chars[x] == config_chars[j]) {
-					config.should_exit = true;
-					fprintf(stderr, "ERROR: configured characters must not be equal\n");
-					break;
-				}
-			}
-			if (config.should_exit == true)
-				break;
-		}
-	} else if (config.should_exit == -2) {
-		fprintf(stderr, "ERROR: configured characters must not belong to this set '%s'\n", restricted_characters);
-	}
+	verify_args(&config, config_chars);
 	return config;
 }
 
@@ -198,24 +199,41 @@ bool parse_exp(char* exp, handle* const top, const args config, FILE* f_out) {
 	return 1;
 }
 
-bool read_text(const args config) {
-	FILE *f_in = stdin, *f_out = stdout;
+void set_files(const args config, FILE **f_in, FILE **f_out) {
 	if (config.infile)
 		f_in = fopen(config.infile, "r");
 	else
 		fprintf(stderr, "WAITING FOR INPUT, '%c' to exit:\n", config.quit);
-
+	//
 	if (config.outfile)
 		f_out = fopen(config.outfile, "w");
 	if (!f_out) {
 		f_out = stdout;
 		fprintf(stderr, "ERROR: could not open output file; all output will be directed to console\n");
 	}
+}
+
+void clear_files(const args *config, FILE **f_in, FILE **f_out) {
+	if (config->infile)
+		{
+			fclose(f_in);
+			free(config->infile);
+		}
+		if (config->outfile)
+		{
+			fclose(f_out);
+			free(config->outfile);
+		}
+}
+
+bool read_text(const args config) {
+	FILE *f_in = stdin, *f_out = stdout;
+	set_files(config, &f_in, &f_out);
 
 	if (f_in) {
-		char exp[exp_len_max];
+		char exp[EXP_LEN_MAX];
 		handle* top = new_stack();
-		while (fgets(exp, exp_len_max, f_in)) {
+		while (fgets(exp, EXP_LEN_MAX, f_in)) {
 			if (exp[0] == config.quit)
 				break;
 			if (exp[0] == '\n' || exp[0] == config.comment)
@@ -239,10 +257,7 @@ bool read_text(const args config) {
 		}
 		pulverize(top);
 		free(top);
-		if (config.infile)
-			fclose(f_in);
-		if (config.outfile)
-			fclose(f_out);
+		clear_files(&config, &f_in, &f_out);
 		return 1;
 	} else
 		fprintf(stderr, "ERROR: could not open input file; program will now exit\n");

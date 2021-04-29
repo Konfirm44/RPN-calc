@@ -1,10 +1,8 @@
-/** @file */
-/** @author Tomasz Sitek */
-#include "misc.h"
-#include "operations.h"
-#include "stack.h"
+#include "..\header\misc.h"
+#include "..\header\operations.h"
+#include "..\header\stack.h"
 
-unsigned int ASRT_COUNT = 0;  // liczba wystąpień błędów, nieistotne dla użytkownika
+unsigned int ASRT_COUNT = 0;  // asrt() macro error count
 
 int main(int argc, char** argv) {
 	args config = parse_args(argc, argv);

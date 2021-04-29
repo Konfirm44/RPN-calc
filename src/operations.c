@@ -1,8 +1,8 @@
 /** @file */
 #include <math.h>
 
-#include "misc.h"
-#include "operations.h"
+#include "..\header\misc.h"
+#include "..\header\operations.h"
 
 double op_add(const double operands[2]) {
 	return operands[1] + operands[0];

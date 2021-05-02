@@ -1,1 +1,1 @@
-gcc -std=c17 -Wall -Werror -pedantic-errors src/main.c header/misc.h src/misc.c header/operations.h src/operations.c header/stack.h src/stack.c -o konp.exe
+gcc -std=c17 -Wall -Werror -pedantic-errors src/* -o konp.exe

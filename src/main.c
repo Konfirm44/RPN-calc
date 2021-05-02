@@ -1,6 +1,6 @@
-#include "..\header\misc.h"
-#include "..\header\operations.h"
-#include "..\header\stack.h"
+#include "misc.h"
+#include "operations.h"
+#include "stack.h"
 
 unsigned int ASRT_COUNT = 0;  // asrt() macro error count
 

@@ -1,7 +1,7 @@
 /** @file */
 #include <ctype.h>
 
-#include "..\header\misc.h"
+#include "misc.h"
 
 /** makro wczytujące wartość argumentu wiersza poleceń będącego pojedynczym znakiem do konfiguracji programu */
 #define arg_char(struct_member)                                                        \

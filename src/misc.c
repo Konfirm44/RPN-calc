@@ -3,24 +3,22 @@
 #include "misc.h"
 
 void get_help() {
-	puts("REVERSE POLISH NOTATION CALCULATOR");
+	puts("Reverse Polish Notation calculator");
 	puts("author: Konfirm44");
 	puts("");
 	puts("available options:");
 	puts("-i		input file directory - if no file is provided, stdin is used");
 	puts("-o		output file directory - if no file is provided, stdout is used");
 	puts("-x		xml input file directory - NOT SUPPORTED IN CURRENT VERSION");
-	puts("-w		set whitespace character 					- default: ' '");
-	puts("-c		set comment character 						- default: '#'");
-	puts("-q		set quit character 							- default: '$'");
-	puts("-d		set stack-delete character 					- default: 'x'");
+	puts("-w		set whitespace character 			- default: ' '");
+	puts("-c		set comment character 				- default: '#'");
+	puts("-q		set quit character 				- default: '$'");
+	puts("-d		set stack-delete character 			- default: 'x'");
 	puts("-m		set memory operation specifier character 	- default: 'm'");
-	puts("-p		set output float precision 					- default: 2");
+	puts("-p		set output float precision 			- default: 2");
 	puts("-h OR -?	displays help");
 	puts("");
-	puts("example: onp.exe -i input.txt -o output.txt -w _ -c @ -q & -p 3");
-	puts("");
-	puts("The program will now exit.");
+	puts("example: rpn.exe -i input.txt -o output.txt -w _ -c @ -q & -p 3");
 }
 
 bool copy_path(char** destination, const char* path) {

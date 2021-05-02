@@ -1,4 +1,3 @@
-/** @file */
 #ifndef MISC_H
 #define MISC_H
 
@@ -23,18 +22,18 @@
 		.memory = 'm'         \
 	}
 
-#define EXP_LEN_MAX 1024					 /// najdłuższa możliwa liczba znaków w pojedynczym wyrażeniu
-#define RESTRICTED_CHARS "0123456789.+-*/^"  /// znaki, których nie można używać jako inicjatorów komentarza itd.
+
+#define EXP_LEN_MAX 1024					 	// maximum character length of a single RPN expression
+#define RESTRICTED_CHARS "0123456789.+-*/^"  	
 #define ERROR_MSG \
 	"You should not be seeing this message. \
 If you do, a critical error has occured. Please contact the app developer.\n"
 
-#define argv(x, y) argv[x][y]				/// wygodniejszy dostęp do tablicy dwuwymiarowej
-#define EQ(str1, str2) !strcmp(str1, str2)  /// wygodniejsze porównywanie stringów
+#define streq(str1, str2) !strcmp(str1, str2)  	// returns true if strings have equivalent values
 
-extern unsigned int ASRT_COUNT;  /// inicjalizacja w main.c
+extern unsigned int ASRT_COUNT;  				// initialized in main.c
 
-/** makro wychwytujące błędy krytyczne */
+/* error-catching macro */
 #define asrt(z)                                                      \
 	if (!z) {                                                        \
 		++ASRT_COUNT;                                                \
@@ -44,58 +43,67 @@ extern unsigned int ASRT_COUNT;  /// inicjalizacja w main.c
 	}
 //
 
-/** argumenty wiersza poleceń */
+/* command line arguments */
 typedef struct args {
-	int should_exit;  ///< informacja o błędnych argumentach
-	char *infile;	 ///< ścieżka do pliku wejściowego
-	char *outfile;	///< ścieżka do pliku wyjściowego
-	char whitespace;  ///< znak odstępu między kolejnymi operatorami/operandami
-	char comment;	 ///< znak/operator rozpoczęcia komentarza
-	char quit;		  ///< znak/operator zamknięcia programu
-	char precision;   ///< długość rozwinięcia dziesiętnego dla wyjścia programu
-	char deleter;	 ///< znak/operator czyszczenia stosu
-	char memory;	  ///< znak/operator rozpoczynający operatory pamięciowe
+	int should_exit;  		// equals 0 if parsing succeeds
+	char *infile;	 		// output file path
+	char *outfile;			// input file path
+	char whitespace;  		// whitespace character- ' ' by default
+	char comment;	 		// comment initializer
+	char quit;		  		// 'quit' character
+	char precision;   		// decimal precision for output
+	char deleter;	 		// stack-clearing character
+	char memory;	  		// memory-operation character
 } args;
 
-/** funkcja wyświetla pomoc */
+/* prints help to stdout */
 void get_help();
 
-/** funkcja sprawdza poprawność podanej ścieżki dostępu do pliku, po czym alokuje pamięć i kopiuje ścieżkę
- * @param destination wskaźnik na pamięć, która będzie alokowana
- * @param source ścieżka dostępu do pliku
- * @return true = powodzenie
+/** checks if file path is valid, allocates destination memory and copies the path
+ * @param destination 
+ * @param source path
+ * @return true upon success
  * */
-bool copy_path(char **destination, const char *source);
+bool copy_path(char **destination, const char *path);
 
-/** funkcja przetwarza argumenty wiersza poleceń
- * @return struktura args przechowująca informacje istotne dla programu
+/* checks if args are not conflicting */
+void verify_args(args* config, char* config_chars);
+
+/** parses command line arguments
+ * @return if parsing fails, the 'should_exit' field of the returned structure is set to true
  * */
 args parse_args(int argc, char **argv);
 
-/** funkcja alokuje i inicjalizuje nowy uchwyt stosu 
- * @return uchwyt stosu lub NULL w przypadku niepowodzenia alokacji
+/** allocates and initializes a stack handle
+ * @return NULL upon failure
  * */
 handle *new_stack();
 
-/** funkcja sprawdza, czy podany string zawiera poprawną liczbę i zwraca ją
- * @param ptr string do sprawdzenia
- * @param d wskaźnik na zmienną, do której zostanie zwrócona liczba
- * @return true = string zawiera liczbę
+/** checks if given strings contains a valid number and parses it
+ * @param str string to be processed
+ * @param parsed_number pointer to a double
+ * @return true if the string contained a valid number, which is returned via the second argument
  * */
-bool is_number(const char *ptr, double *d);
+bool is_number(const char *str, double *parsed_number);
 
-/** funkcja przetwarza wyrażenie w ONP podane w stringu
- * @param exp przetwarzany string
- * @param top uchwyt stosu
- * @param config konfiguracja programu
- * @param f_out strumień wyjścia programu
+/** processes a string that contains an RNP expression
+ * @param exp string to be processed
+ * @param top initialized stack handle
+ * @param config program config
+ * @param f_out opened output stream
  * @return true = powodzenie
  * */
 bool parse_exp(char *exp, handle *const top, const args config, FILE *f_out);
 
-/** funkcja 
- * @param config konfiguracja programu
- * @return true = powodzenie
+/* opens files based on config*/
+void set_files(const args config, FILE** f_in, FILE** f_out);
+
+/* closes files based on config */
+void clear_files(const args* config, FILE** f_in, FILE** f_out);
+
+/** handles the processing of RPN expressions
+ * @param config program config
+ * @return true upon success
  * */
 bool read_text(const args config);
 

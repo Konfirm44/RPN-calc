@@ -1,4 +1,3 @@
-/** @file */
 #include <math.h>
 
 #include "misc.h"
@@ -25,16 +24,16 @@ double op_pow(const double operands[2]) {
 }
 
 bool memory_operation(handle* const top, const char* op) {
-	if (EQ(op, "m+")) {
+	if (streq(op, "m+")) {
 		top->memory += peek(top);
 		return 1;
-	} else if (EQ(op, "m-")) {
+	} else if (streq(op, "m-")) {
 		top->memory -= peek(top);
 		return 1;
-	} else if (EQ(op, "mr")) {
+	} else if (streq(op, "mr")) {
 		push(top, top->memory);
 		return 1;
-	} else if (EQ(op, "mc")) {
+	} else if (streq(op, "mc")) {
 		top->memory = 0;
 		return 1;
 	}

@@ -1,42 +1,21 @@
-/** @file */
 #include <ctype.h>
 
 #include "misc.h"
 
-/** makro wczytujące wartość argumentu wiersza poleceń będącego pojedynczym znakiem do konfiguracji programu */
-#define arg_char(struct_member)                                                        \
-	if (strlen(argv[++i]) != 1) {                                                      \
-		config.should_exit = true;                                                     \
-	} else {                                                                           \
-		if (strchr(RESTRICTED_CHARS, argv(i, 0)))                                      \
-			config.should_exit = -2;                                                   \
-		else {                                                                         \
-			char* ptr = strchr(config_chars, config.struct_member);                    \
-			if (!ptr) {                                                                \
-				fprintf(stderr, "FATAL ERROR: arg_char _%c_\n", config.struct_member); \
-				config.should_exit = true;                                             \
-			} else {                                                                   \
-				*ptr = argv(i, 0);                                                     \
-				config.struct_member = argv(i, 0);                                     \
-			}                                                                          \
-		}                                                                              \
-	}
-//
-
 void get_help() {
 	puts("REVERSE POLISH NOTATION CALCULATOR");
-	puts("author: Tomasz Sitek");
+	puts("author: Konfirm44");
 	puts("");
 	puts("available options:");
 	puts("-i		input file directory - if no file is provided, stdin is used");
 	puts("-o		output file directory - if no file is provided, stdout is used");
 	puts("-x		xml input file directory - NOT SUPPORTED IN CURRENT VERSION");
-	puts("-w		set whitespace character - default: ' '");
-	puts("-c		set comment character - default: '#'");
-	puts("-q		set quit character - default: '$'");
-	puts("-d		set stack-delete character - default: 'x'");
-	puts("-m		set memory operation specifier character - default: 'm'");
-	puts("-p		set output float precision - default: 2");
+	puts("-w		set whitespace character 					- default: ' '");
+	puts("-c		set comment character 						- default: '#'");
+	puts("-q		set quit character 							- default: '$'");
+	puts("-d		set stack-delete character 					- default: 'x'");
+	puts("-m		set memory operation specifier character 	- default: 'm'");
+	puts("-p		set output float precision 					- default: 2");
 	puts("-h OR -?	displays help");
 	puts("");
 	puts("example: onp.exe -i input.txt -o output.txt -w _ -c @ -q & -p 3");
@@ -44,12 +23,12 @@ void get_help() {
 	puts("The program will now exit.");
 }
 
-bool copy_path(char** destination, const char* source) {
-	if (strcspn(source, "<>|?*") != strlen(source))
+bool copy_path(char** destination, const char* path) {
+	if (strcspn(path, "<>|?*") != strlen(path))
 		return 0;
-	(*destination) = malloc(strlen(source) + 1);
+	(*destination) = malloc(strlen(path) + 1);
 	asrt(*destination);
-	strcpy(*destination, source);
+	strcpy(*destination, path);
 	return 1;
 }
 
@@ -69,7 +48,7 @@ void verify_args(args* config, char* config_chars) {
 	} else if (config->should_exit == -2) {
 		fprintf(stderr, "ERROR: configured characters must not belong to this set '%s'\n", RESTRICTED_CHARS);
 	}
-	if (config->should_exit != false) {
+	if (config->should_exit != 0) {
 		if (config->infile)
 			free(config->infile);
 		if (config->outfile)
@@ -77,15 +56,35 @@ void verify_args(args* config, char* config_chars) {
 	}
 }
 
+/* single-char param parsing macro */
+#define arg_char(struct_member)                                                        \
+	if (strlen(argv[++i]) != 1) {                                                      \
+		config.should_exit = true;                                                     \
+	} else {                                                                           \
+		if (strchr(RESTRICTED_CHARS, argv[i][0]))                                      \
+			config.should_exit = -2;                                                   \
+		else {                                                                         \
+			char* ptr = strchr(config_chars, config.struct_member);                    \
+			if (!ptr) {                                                                \
+				fprintf(stderr, "FATAL ERROR: arg_char _%c_\n", config.struct_member); \
+				config.should_exit = true;                                             \
+			} else {                                                                   \
+				*ptr = argv[i][0];                                                     \
+				config.struct_member = argv[i][0];                                     \
+			}                                                                          \
+		}                                                                              \
+	}
+//
+
 args parse_args(int argc, char** argv) {
 	args config = DEFAULT_ARGS;
 
 	char config_chars[8] = "#$ xm";
 	int i;
 	for (i = 1; i < argc; ++i) {
-		if (argv(i, 0) == '-') {
+		if (argv[i][0] == '-') {
 			if (strlen(argv[i]) == 2) {
-				char c = argv(i, 1);
+				char c = argv[i][1];
 				if (i != argc - 1) {
 					if (c == 'i') {
 						if (!copy_path(&(config.infile), argv[++i]))
@@ -138,11 +137,11 @@ handle* new_stack() {
 	return top;
 }
 
-bool is_number(const char* ptr, double* d) {
+bool is_number(const char* ptr, double* parsed_number) {
 	char* endptr;
 	double val = strtof(ptr, &endptr);
 	if ((*endptr) == '\0') {
-		*d = val;
+		*parsed_number = val;
 		return 1;
 	}
 	return 0;

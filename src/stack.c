@@ -1,4 +1,3 @@
-/** @file */
 #include "stack.h"
 #include "misc.h"
 

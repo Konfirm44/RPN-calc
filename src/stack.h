@@ -1,44 +1,43 @@
-/** @file */
 #ifndef STACK_H
 #define STACK_H
 
 #include <stdbool.h>
 
-/** element stosu */
+/** stack element */
 typedef struct stack {
 	double value;
 	struct stack* next;
 } stack;
 
-/** uchwyt stosu */
+/** stack handle */
 typedef struct handle {
 	stack* head;
 	double memory;
 	unsigned int stacksize;
 } handle;
 
-/** funkcja wstawia liczbę na szczyt stosu
- * @param top uchwyt stosu
- * @param d liczba wstawiana na stos
- * @return true = powodzenie
+/** adds a number on top of the stack
+ * @param top stack handle
+ * @param d the number
+ * @return true upon success
  * */
 bool push(handle* const top, const double d);
 
-/** funkcja zdejmuje liczbę ze szczytu stosu
- * @param top uchwyt stosu
- * @param d wskaźnik na zmienną, do której zwracana jest liczba zdjęta ze stosu
- * @return true = powodzenie
+/** pops and returns the number from the top of the stack
+ * @param top stack handle
+ * @param d return-pointer
+ * @return true upon success
  * */
 bool pop(handle* const top, double* d);
 
-/** funkcja zwraca wartość liczby ze szczytu stosu bez zdejmowania jej
- * @param top uchwyt stosu
- * @return wartość liczby ze szczytu stosu, jeżeli stos jest pusty, to funkcja zwróci 0
+/** returns the topmost number without popping it
+ * @param top stack handle
+ * @return value of the number or 0 if the stack is empty
  * */
 double peek(handle* const top);
 
-/** funkcja niszczy stos
- * @param top uchwyt stosu
+/** destroys the stack
+ * @param top stack handle
  * */
 void pulverize(handle* const top);
 

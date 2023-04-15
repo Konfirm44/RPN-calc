@@ -159,8 +159,9 @@ bool parse_exp(char* exp, handle* const top, const args config, FILE* f_out) {
 		} else if (is_number(ptr, &d)) {
 			asrt(push(top, d));
 		} else if (ptr[0] == config.memory) {
-			if (!memory_operation(top, ptr)) {  //zmiana
+			if (!memory_operation(top, ptr)) {
 				fprintf(f_out, "ERROR: invalid memory operator\n");
+				pulverize(top);
 				return 0;
 			}
 		} else if (ptr[0] == config.deleter) {
@@ -175,10 +176,12 @@ bool parse_exp(char* exp, handle* const top, const args config, FILE* f_out) {
 					free(operands);
 				} else {
 					fprintf(f_out, "ERROR: too few operands\n");
+					pulverize(top);
 					return 0;
 				}
 			} else {
 				fprintf(f_out, "ERROR: invalid token '%s'\n", ptr);
+				pulverize(top);
 				return 0;
 			}
 		}

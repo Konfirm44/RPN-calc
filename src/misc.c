@@ -3,13 +3,12 @@
 #include "misc.h"
 
 void get_help() {
-	puts("Reverse Polish Notation calculator");
+	puts("Reverse Polish Notation Calculator");
 	puts("author: Konfirm44");
 	puts("");
 	puts("available options:");
 	puts("-i		input file directory - if no file is provided, stdin is used");
 	puts("-o		output file directory - if no file is provided, stdout is used");
-	puts("-x		xml input file directory - NOT SUPPORTED IN CURRENT VERSION");
 	puts("-w		set whitespace character 			- default: ' '");
 	puts("-c		set comment character 				- default: '#'");
 	puts("-q		set quit character 				- default: '$'");

@@ -26,8 +26,7 @@
 #define EXP_LEN_MAX 1024					 	// maximum character length of a single RPN expression
 #define RESTRICTED_CHARS "0123456789.+-*/^"  	
 #define ERROR_MSG \
-	"You should not be seeing this message. \
-If you do, a critical error has occured. Please contact the app developer.\n"
+	"A critical error has occured.\n"
 
 #define streq(str1, str2) !strcmp(str1, str2)  	// returns true if strings have equivalent values
 

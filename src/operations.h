@@ -12,7 +12,7 @@ typedef struct operation {
 	unsigned int num_of_operands;
 } operation;
 
-/** function-declaring macro- 
+/** function-declaring macro 
  * @param name function name
  * */
 #define op_function_declr(name) op_##name(const double operands[])

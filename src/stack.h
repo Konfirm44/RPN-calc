@@ -5,16 +5,21 @@
 
 /** stack element */
 typedef struct stack {
-	double value;
-	struct stack* next;
+    double value;
+    struct stack* next;
 } stack;
 
 /** stack handle */
 typedef struct handle {
-	stack* head;
-	double memory;
-	unsigned int stacksize;
+    stack* head;
+    double memory;
+    unsigned int stacksize;
 } handle;
+
+/** allocates and initializes a stack handle
+ * @return NULL upon failure
+ * */
+handle* new_stack();
 
 /** adds a number on top of the stack
  * @param top stack handle

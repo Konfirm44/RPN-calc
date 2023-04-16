@@ -1,34 +1,43 @@
 #include "stack.h"
 #include "misc.h"
 
+handle* new_stack() {
+    handle* top = malloc(sizeof(handle));
+    asrt(top);
+    top->head = NULL;
+    top->memory = 0;
+    top->stacksize = 0;
+    return top;
+}
+
 bool push(handle* const top, const double d) {
-	stack* p = malloc(sizeof(stack));
-	asrt(p);
-	p->value = d;
-	p->next = top->head;
-	top->head = p;
-	++(top->stacksize);
-	return 1;
+    stack* p = malloc(sizeof(stack));
+    asrt(p);
+    p->value = d;
+    p->next = top->head;
+    top->head = p;
+    ++(top->stacksize);
+    return 1;
 }
 
 bool pop(handle* const top, double* d) {
-	asrt(top->head);
-	*d = top->head->value;
-	stack* p = top->head->next;
-	free(top->head);
-	top->head = p;
-	--(top->stacksize);
-	return 1;
+    asrt(top->head);
+    *d = top->head->value;
+    stack* p = top->head->next;
+    free(top->head);
+    top->head = p;
+    --(top->stacksize);
+    return 1;
 }
 
 double peek(handle* const top) {
-	if (!(top->head))
-		return 0;
-	return top->head->value;
+    if (!(top->head))
+        return 0;
+    return top->head->value;
 }
 
 void pulverize(handle* const top) {
-	double d;
-	while (top->head)
-		pop(top, &d);
+    double d;
+    while (top->head)
+        pop(top, &d);
 }

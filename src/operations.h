@@ -15,7 +15,7 @@ typedef struct operation {
 /** function-declaring macro 
  * @param name function name
  * */
-#define op_function_declr(name) op_##name(const double operands[])
+#define op_function_declr(name) op_##name(const double operands[2])
 
 /** addition */
 double op_function_declr(add);

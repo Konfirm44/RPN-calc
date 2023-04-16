@@ -10,23 +10,23 @@
 #include "stack.h"
 
 #define DEFAULT_ARGS          \
-	{                         \
-		.should_exit = false, \
-		.infile = NULL,       \
-		.outfile = NULL,      \
-		.whitespace = ' ',    \
-		.comment = '#',       \
-		.quit = '$',          \
-		.precision = 2,       \
-		.deleter = 'x',       \
-		.memory = 'm'         \
-	}
+    {                         \
+        .should_exit = false, \
+        .infile = NULL,       \
+        .outfile = NULL,      \
+        .whitespace = ' ',    \
+        .comment = '#',       \
+        .quit = '$',          \
+        .precision = 2,       \
+        .deleter = 'x',       \
+        .memory = 'm'         \
+    }
 
 
 #define EXP_LEN_MAX 1024					 	// maximum character length of a single RPN expression
 #define RESTRICTED_CHARS "0123456789.+-*/^"  	
 #define ERROR_MSG \
-	"A critical error has occured.\n"
+    "A critical error has occured.\n"
 
 #define streq(str1, str2) !strcmp(str1, str2)  	// returns true if strings have equivalent values
 
@@ -34,25 +34,25 @@ extern unsigned int ASRT_COUNT;  				// initialized in main.c
 
 /* error-catching macro */
 #define asrt(z)                                                      \
-	if (!z) {                                                        \
-		++ASRT_COUNT;                                                \
-		fprintf(stderr, ERROR_MSG);                                  \
-		fprintf(stderr, "error@ %s, line %d\n", __FILE__, __LINE__); \
-		return 0;                                                    \
-	}
+    if (!z) {                                                        \
+        ++ASRT_COUNT;                                                \
+        fprintf(stderr, ERROR_MSG);                                  \
+        fprintf(stderr, "error@ %s, line %d\n", __FILE__, __LINE__); \
+        return 0;                                                    \
+    }
 //
 
 /* command line arguments */
 typedef struct args {
-	int should_exit;  		// equals 0 if parsing succeeds
-	char *infile;	 		// output file path
-	char *outfile;			// input file path
-	char whitespace;  		// whitespace character- ' ' by default
-	char comment;	 		// comment initializer
-	char quit;		  		// 'quit' character
-	char precision;   		// decimal precision for output
-	char deleter;	 		// stack-clearing character
-	char memory;	  		// memory-operation character
+    int should_exit;  		// equals 0 if parsing succeeds
+    char *infile;	 		// output file path
+    char *outfile;			// input file path
+    char whitespace;  		// whitespace character- ' ' by default
+    char comment;	 		// comment initializer
+    char quit;		  		// 'quit' character
+    char precision;   		// decimal precision for output
+    char deleter;	 		// stack-clearing character
+    char memory;	  		// memory-operation character
 } args;
 
 /* prints help to stdout */

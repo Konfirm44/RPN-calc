@@ -7,9 +7,9 @@
 
 /** function pointers array element */
 typedef struct operation {
-	double (*fn_ptr)(const double operands[]);
-	const char* tag;
-	unsigned int num_of_operands;
+    double (*fn_ptr)(const double operands[]);
+    const char* tag;
+    unsigned int num_of_operands;
 } operation;
 
 /** function-declaring macro 

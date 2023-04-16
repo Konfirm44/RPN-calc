@@ -27,13 +27,16 @@ bool memory_operation(handle* const top, const char* op) {
     if (streq(op, "m+")) {
         top->memory += peek(top);
         return 1;
-    } else if (streq(op, "m-")) {
+    }
+    else if (streq(op, "m-")) {
         top->memory -= peek(top);
         return 1;
-    } else if (streq(op, "mr")) {
+    }
+    else if (streq(op, "mr")) {
         push(top, top->memory);
         return 1;
-    } else if (streq(op, "mc")) {
+    }
+    else if (streq(op, "mc")) {
         top->memory = 0;
         return 1;
     }
@@ -46,10 +49,13 @@ const operation* get_operation(const char* str) {
         {op_subtract, "-", 2},
         {op_multiply, "*", 2},
         {op_divide, "/", 2},
-        {op_pow, "^", 2}};
-    for (int i = 0; i < N_OPERATIONS; ++i)
-        if (!strcmp(ops[i].tag, str))
+        {op_pow, "^", 2}
+    };
+    for (int i = 0; i < N_OPERATIONS; ++i) {
+        if (!strcmp(ops[i].tag, str)) {
             return &(ops[i]);
+        }
+    }
     return NULL;
 }
 

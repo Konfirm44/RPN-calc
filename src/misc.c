@@ -21,12 +21,14 @@ void get_help() {
 }
 
 bool copy_path(char** destination, const char* path) {
-    if (strcspn(path, "<>|?*") != strlen(path))
+    if (strcspn(path, "<>|?*") != strlen(path)) {
         return 0;
+    }
+    
     (*destination) = malloc(strlen(path) + 1);
     asrt(*destination);
     strcpy(*destination, path);
-    return 1; 
+    return 1;
 }
 
 void verify_args(args* config, char* config_chars) {
@@ -39,17 +41,23 @@ void verify_args(args* config, char* config_chars) {
                     break;
                 }
             }
-            if (config->should_exit == true)
+
+            if (config->should_exit == true) {
                 break;
+            }
         }
-    } else if (config->should_exit == -2) {
+    }
+    else if (config->should_exit == -2) {
         fprintf(stderr, "ERROR: configured characters must not belong to this set '%s'\n", RESTRICTED_CHARS);
     }
+
     if (config->should_exit != 0) {
-        if (config->infile)
+        if (config->infile) {
             free(config->infile);
-        if (config->outfile)
+        }
+        if (config->outfile) {
             free(config->outfile);
+        }
     }
 }
 
@@ -57,15 +65,18 @@ void verify_args(args* config, char* config_chars) {
 #define arg_char(struct_member)                                                        \
     if (strlen(argv[++i]) != 1) {                                                      \
         config.should_exit = true;                                                     \
-    } else {                                                                           \
+    }                                                                                  \
+    else {                                                                             \
         if (strchr(RESTRICTED_CHARS, argv[i][0])) {                                    \
             config.should_exit = -2;                                                   \
-        } else {                                                                       \
+        }                                                                              \
+        else {                                                                         \
             char* ptr = strchr(config_chars, config.struct_member);                    \
             if (!ptr) {                                                                \
                 fprintf(stderr, "FATAL ERROR: arg_char _%c_\n", config.struct_member); \
                 config.should_exit = true;                                             \
-            } else {                                                                   \
+            }                                                                          \
+            else {                                                                     \
                 *ptr = argv[i][0];                                                     \
                 config.struct_member = argv[i][0];                                     \
             }                                                                          \
@@ -84,38 +95,53 @@ args parse_args(int argc, char** argv) {
                 char c = argv[i][1];
                 if (i != argc - 1) {
                     if (c == 'i') {
-                        if (!copy_path(&(config.infile), argv[++i]))
+                        if (!copy_path(&(config.infile), argv[++i])) {
                             config.should_exit = true;
-                    } else if (c == 'o') {
-                        if (!copy_path(&(config.outfile), argv[++i]))
+                        }
+                    }
+                    else if (c == 'o') {
+                        if (!copy_path(&(config.outfile), argv[++i])) {
                             config.should_exit = true;
-                    } else if (c == 'w') {
+                        }
+                    }
+                    else if (c == 'w') {
                         arg_char(whitespace);
-                    } else if (c == 'c') {
+                    }
+                    else if (c == 'c') {
                         arg_char(comment);
-                    } else if (c == 'q') {
+                    }
+                    else if (c == 'q') {
                         arg_char(quit);
-                    } else if (c == 'd') {
+                    }
+                    else if (c == 'd') {
                         arg_char(deleter);
-                    } else if (c == 'm') {
+                    }
+                    else if (c == 'm') {
                         arg_char(memory);
-                    } else if (c == 'p') {
+                    }
+                    else if (c == 'p') {
                         char* endptr;
                         size_t t = strtol(argv[i], &endptr, 10);
-                        if ((*endptr) != '\0' || t > 15)
+                        if ((*endptr) != '\0' || t > 15) {
                             config.should_exit = true;
-                        else
+                        }
+                        else {
                             config.precision = t;
-                    } else {
+                        }
+                    }
+                    else {
                         config.should_exit = true;
                     }
-                } else if (c == 'h' || c == '?') {
+                }
+                else if (c == 'h' || c == '?') {
                     get_help();
                     config.should_exit = -1;
-                } else {
+                }
+                else {
                     config.should_exit = true;
                 }
-            } else {
+            }
+            else {
                 config.should_exit = true;
             }
         }
@@ -149,9 +175,9 @@ bool is_number(const char* ptr, double* parsed_number) {
 
 bool parse_exp(char* exp, handle* const top, const args config, FILE* f_out) {
     asrt(exp);
-    if (config.infile)
+    if (config.infile) {
         fprintf(f_out, "exp= %s\n", exp);
-
+    }
     char delim[2] = " ";
     delim[0] = config.whitespace;
     char* ptr = strtok(exp, delim);
@@ -159,17 +185,21 @@ bool parse_exp(char* exp, handle* const top, const args config, FILE* f_out) {
         double d;
         if (ptr[0] == config.comment) {
             break;
-        } else if (is_number(ptr, &d)) {
+        }
+        else if (is_number(ptr, &d)) {
             asrt(push(top, d));
-        } else if (ptr[0] == config.memory) {
+        }
+        else if (ptr[0] == config.memory) {
             if (!memory_operation(top, ptr)) {
                 fprintf(f_out, "ERROR: invalid memory operator\n");
                 pulverize(top);
                 return 0;
             }
-        } else if (ptr[0] == config.deleter) {
+        }
+        else if (ptr[0] == config.deleter) {
             pulverize(top);
-        } else {
+        }
+        else {
             const operation* op = get_operation(ptr);
             if (op) {
                 if (top->stacksize >= op->num_of_operands) {
@@ -177,12 +207,14 @@ bool parse_exp(char* exp, handle* const top, const args config, FILE* f_out) {
                     asrt(operands);
                     asrt(push(top, op->fn_ptr(operands)));
                     free(operands);
-                } else {
+                }
+                else {
                     fprintf(f_out, "ERROR: too few operands\n");
                     pulverize(top);
                     return 0;
                 }
-            } else {
+            }
+            else {
                 fprintf(f_out, "ERROR: invalid token '%s'\n", ptr);
                 pulverize(top);
                 return 0;
@@ -201,13 +233,17 @@ bool parse_exp(char* exp, handle* const top, const args config, FILE* f_out) {
 }
 
 void set_files(const args config, FILE** f_in, FILE** f_out) {
-    if (config.infile)
+    if (config.infile) {
         *f_in = fopen(config.infile, "r");
-    else
+    }
+    else {
         fprintf(stderr, "WAITING FOR INPUT, '%c' to exit:\n", config.quit);
-    //
-    if (config.outfile)
+    }
+
+    if (config.outfile) {
         *f_out = fopen(config.outfile, "w");
+    }
+
     if (!(*f_out)) {
         *f_out = stdout;
         fprintf(stderr, "ERROR: could not open output file; all output will be directed to console\n");
@@ -226,30 +262,39 @@ void clear_files(const args* config, FILE** f_in, FILE** f_out) {
 }
 
 bool read_text(const args config) {
-    FILE *f_in = stdin, *f_out = stdout;
+    FILE* f_in = stdin, * f_out = stdout;
     set_files(config, &f_in, &f_out);
 
     if (f_in) {
         char exp[EXP_LEN_MAX];
         handle* top = new_stack();
         while (fgets(exp, EXP_LEN_MAX, f_in)) {
-            if (exp[0] == config.quit)
+            if (exp[0] == config.quit) {
                 break;
-            if (exp[0] == '\n' || exp[0] == config.comment)
+            }
+
+            if (exp[0] == '\n' || exp[0] == config.comment) {
                 continue;
-            if (exp[strlen(exp) - 1] == '\n')
+            }
+
+            if (exp[strlen(exp) - 1] == '\n') {
                 exp[strlen(exp) - 1] = '\0';
+            }
 
             if (!parse_exp(exp, top, config, f_out)) {
                 fprintf(f_out, "ERROR: expression invalid\n");
-            } else {
+            }
+            else {
                 if (top->head) {
                     double d;
-                    if (!pop(top, &d))
+                    if (!pop(top, &d)) {
                         fprintf(f_out, "FATAL ERROR: could not pop\n");
-                    else
+                    }
+                    else {
                         fprintf(f_out, "\n\t= %.*f\n", config.precision, d);
-                } else {
+                    }
+                }
+                else {
                     fprintf(f_out, "\n\t= ___\nCalculator memory appears to be empty. Perhaps you used the '%c' operator at the end of your expression?\n", config.deleter);
                 }
             }
@@ -258,9 +303,10 @@ bool read_text(const args config) {
         free(top);
         clear_files(&config, &f_in, &f_out);
         return 1;
-    } else {
+    }
+    else {
         fprintf(stderr, "ERROR: could not open input file; program will now exit\n");
     }
-    
+
     return 0;
 }

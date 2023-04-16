@@ -9,7 +9,7 @@ int main(int argc, char** argv) {
     if (!(config.should_exit)) {
         read_text(config);
     }
-    
+
     if (ASRT_COUNT) {
         fprintf(stderr, "\nerr_count = %u\n\tpress any key to exit", ASRT_COUNT);
         getchar();

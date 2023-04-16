@@ -12,7 +12,7 @@ typedef struct operation {
     unsigned int num_of_operands;
 } operation;
 
-/** function-declaring macro 
+/** function-declaring macro
  * @param name function name
  * */
 #define op_function_declr(name) op_##name(const double operands[])
@@ -32,7 +32,7 @@ double op_function_declr(divide);
 /** exponentation */
 double op_function_declr(pow);
 
-/** processes a memory operation according to the provided memory operator 
+/** processes a memory operation according to the provided memory operator
  * @param top stack handle
  * @param op string containing the memory operator
  * @return true upon success

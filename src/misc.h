@@ -45,8 +45,8 @@ extern unsigned int ASRT_COUNT;  				// initialized in main.c
 /* command line arguments */
 typedef struct args {
     int should_exit;  		// equals 0 if parsing succeeds
-    char *infile;	 		// output file path
-    char *outfile;			// input file path
+    char* infile;	 		// output file path
+    char* outfile;			// input file path
     char whitespace;  		// whitespace character- ' ' by default
     char comment;	 		// comment initializer
     char quit;		  		// 'quit' character
@@ -59,11 +59,11 @@ typedef struct args {
 void get_help();
 
 /** checks if file path is valid, allocates destination memory and copies the path
- * @param destination 
+ * @param destination
  * @param source path
  * @return true upon success
  * */
-bool copy_path(char **destination, const char *path);
+bool copy_path(char** destination, const char* path);
 
 /* checks if args are not conflicting */
 void verify_args(args* config, char* config_chars);
@@ -71,19 +71,19 @@ void verify_args(args* config, char* config_chars);
 /** parses command line arguments
  * @return if parsing fails, the 'should_exit' field of the returned structure is set to true
  * */
-args parse_args(int argc, char **argv);
+args parse_args(int argc, char** argv);
 
 /** allocates and initializes a stack handle
  * @return NULL upon failure
  * */
-handle *new_stack();
+handle* new_stack();
 
 /** checks if given strings contains a valid number and parses it
  * @param str string to be processed
  * @param parsed_number pointer to a double
  * @return true if the string contained a valid number, which is returned via the second argument
  * */
-bool is_number(const char *str, double *parsed_number);
+bool is_number(const char* str, double* parsed_number);
 
 /** processes a string that contains an RNP expression
  * @param exp string to be processed
@@ -92,7 +92,7 @@ bool is_number(const char *str, double *parsed_number);
  * @param f_out opened output stream
  * @return true = powodzenie
  * */
-bool parse_exp(char *exp, handle *const top, const args config, FILE *f_out);
+bool parse_exp(char* exp, handle* const top, const args config, FILE* f_out);
 
 /* opens files based on config*/
 void set_files(const args config, FILE** f_in, FILE** f_out);

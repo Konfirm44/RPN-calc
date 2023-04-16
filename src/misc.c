@@ -154,15 +154,6 @@ args parse_args(int argc, char** argv) {
     return config;
 }
 
-handle* new_stack() {
-    handle* top = malloc(sizeof(handle));
-    asrt(top);
-    top->head = NULL;
-    top->memory = 0;
-    top->stacksize = 0;
-    return top;
-}
-
 bool is_number(const char* ptr, double* parsed_number) {
     char* endptr;
     double val = strtof(ptr, &endptr);

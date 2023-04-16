@@ -73,11 +73,6 @@ void verify_args(args* config, char* config_chars);
  * */
 args parse_args(int argc, char** argv);
 
-/** allocates and initializes a stack handle
- * @return NULL upon failure
- * */
-handle* new_stack();
-
 /** checks if given strings contains a valid number and parses it
  * @param str string to be processed
  * @param parsed_number pointer to a double

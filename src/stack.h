@@ -16,6 +16,11 @@ typedef struct handle {
     unsigned int stacksize;
 } handle;
 
+/** allocates and initializes a stack handle
+ * @return NULL upon failure
+ * */
+handle* new_stack();
+
 /** adds a number on top of the stack
  * @param top stack handle
  * @param d the number

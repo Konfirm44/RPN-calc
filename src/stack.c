@@ -1,6 +1,15 @@
 #include "stack.h"
 #include "misc.h"
 
+handle* new_stack() {
+    handle* top = malloc(sizeof(handle));
+    asrt(top);
+    top->head = NULL;
+    top->memory = 0;
+    top->stacksize = 0;
+    return top;
+}
+
 bool push(handle* const top, const double d) {
     stack* p = malloc(sizeof(stack));
     asrt(p);
